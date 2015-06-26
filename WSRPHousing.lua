@@ -11,7 +11,7 @@ require "Unit"
 -- WSRPHousing Module Definition
 -----------------------------------------------------------------------------------------------
 local WSRPHousing = {} 
- 
+
 -----------------------------------------------------------------------------------------------
 -- Constants
 -----------------------------------------------------------------------------------------------
@@ -22,6 +22,13 @@ local ktStyles = {
 	content = { color = "UI_BtnTextHoloNormal", font = "CRB_InterfaceMedium", align = "Left" },
 	rules = {color = "UI_TextHoloTitle", font = "CRB_InterfaceMedium_BB", align = "Center" }
 }
+
+local function strsplit(sep, str)
+		local sep, fields = sep or ":", {}
+		local pattern = string.format("([^%s]+)", sep)
+		string.gsub(str ,pattern, function(c) fields[#fields+1] = c end)
+		return fields
+end
 
 -----------------------------------------------------------------------------------------------
 -- Initialization
@@ -42,11 +49,18 @@ function WSRPHousing:Init()
 	local strConfigureButtonText = ""
 	local tDependencies = {
 		-- "UnitOrPackageName",
+		"OneVersion",
 	}
     Apollo.RegisterAddon(self, bHasConfigureFunction, strConfigureButtonText, tDependencies)
 end
- 
 
+ function WSRPHousing:OnDependencyError(strDep, strError)
+	-- if you don't care about this dependency, return true.
+	if strDep == "OneVersion" then
+		return true
+	end
+	return false
+end
 -----------------------------------------------------------------------------------------------
 -- WSRPHousing OnLoad
 -----------------------------------------------------------------------------------------------
@@ -60,7 +74,6 @@ end
 -- WSRPHousing OnDocLoaded
 -----------------------------------------------------------------------------------------------
 function WSRPHousing:OnDocLoaded()
-
 	if self.xmlDoc ~= nil and self.xmlDoc:IsLoaded() then
 	    self.wndMain = Apollo.LoadForm(self.xmlDoc, "WSRPHousingForm", nil, self)
 		Apollo.LoadSprites("WSRPHousingSprites.xml","WSRPHousingSprites")
@@ -112,6 +125,8 @@ end
 function WSRPHousing:OnInterfaceMenuLoaded()
 	local tData = {"WSRPHousing_InterfaceMenu", "","WSRPHousingSprites:Icon"}
 	Event_FireGenericEvent("InterfaceMenuList_NewAddOn", "WSRP Housing Directory" , tData)
+	local iMaj, iMin, iPatch = unpack(strsplit(".", XmlDoc.CreateFromFile("toc.xml"):ToTable().Version))
+	Event_FireGenericEvent("OneVersion_ReportAddonInfo", "WSRPHousing", tonumber(iMaj), tonumber(iMin), tonumber(iPatch))
 end
 --btnAnimate
 function WSRPHousing:OnWSRPHousingInterfaceMenu()
@@ -123,13 +138,6 @@ end
 -- WSRPHousing Functions
 -----------------------------------------------------------------------------------------------
 -- Define general functions here
-
-local function strsplit(sep, str)
-		local sep, fields = sep or ":", {}
-		local pattern = string.format("([^%s]+)", sep)
-		string.gsub(str ,pattern, function(c) fields[#fields+1] = c end)
-		return fields
-end
 
 function WSRPHousing:LoadData(strRealmName)
 
@@ -218,6 +226,8 @@ function WSRPHousing:OnSelectionChanged( wndHandler, wndControl, iRow, iCol)
 			wndMarkup:BeginDoogie(500)
 	else
 			wndHolo:SetAnchorOffsets(220, 72, 669, 770)
+			wndMarkup:RecalculateContentExtents()
+			wndMarkup:SetVScrollPos(0)
 	end
 end
 

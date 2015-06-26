@@ -45,4 +45,11 @@ return {
 		description = "This plot is a Vigilant Church, fully dedicated to the religious beliefs of the Dominion religion. There is a shrine to the Six Scions, a full church with pipe organ, confessional and prayer candles, a church rectory, mausoleum w/cemetery, a conference/meeting hall, cleansing water spring and expansive garden. \nIt is open to all religious events. Please contact our staff to set up events or for use of the plot, it is open for viewing, but would like to keep the peace so to speak. Regular Vigils (sermons) are held on Sundays at 7:00 PM EST.",
 		screenshots = "EntityDominionPlayer:OpethMistreaver1, EntityDominionPlayer:OpethMistreaver2"
 	 },
+	 {
+		 title = "Evindra Imeperial Park",
+		 owner = "Xerune Novimae",
+		 hours = "24/7",
+		 staff = "Xerune Novimae, Isabella Sinclair, Perseus Ford, Vyzura Razorcloak, Atun Nol",
+		 description = "The Imperial Park is a place for all Dominion citizens to enjoy the flora wonders of Nexus at any time and within the safety of the Empire.  However there is also a secret, underground the ICI conducts meetings and other details.",
+	 },
 }
