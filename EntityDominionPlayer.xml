@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sprites>
+    <Sprite Name="GrumlenDangerpants1" Cycle="1">
+        <Frame Texture="WSRPHousing\images\EntityDominion\GrumlenDangerpants1.png" x0="0" x1="0" x2="0" x3="256" x4="256" x5="256" y0="0" y1="0" y2="0" y3="256" y4="256" y5="256" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
+    </Sprite>
+    <Sprite Name="GrumlenDangerpants2" Cycle="1">
+        <Frame Texture="WSRPHousing\images\EntityDominion\GrumlenDangerpants2.png" x0="0" x1="0" x2="0" x3="256" x4="256" x5="256" y0="0" y1="0" y2="0" y3="256" y4="256" y5="256" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
+    </Sprite>
+</Sprites>

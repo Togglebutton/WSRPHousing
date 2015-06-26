@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Sprites>
+    <Sprite Name="Icon" Cycle="1">
+        <Frame Texture="WSRPHousing\images\icon.tga" x0="0" x1="0" x2="0" x3="32" x4="32" x5="32" y0="0" y1="0" y2="0" y3="32" y4="32" y5="32" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
+    </Sprite>
+    <Sprite Name="Logo" Cycle="1">
+        <Frame Texture="WSRPHousing\images\Logo.tga" x0="10" x1="10" x2="10" x3="356" x4="356" x5="356" y0="21" y1="21" y2="21" y3="214" y4="214" y5="214" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
+    </Sprite>
+</Sprites>
