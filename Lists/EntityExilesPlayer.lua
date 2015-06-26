@@ -21,4 +21,24 @@ return {
 		staff = "Grayson Nash, Kaethryne Nash, Tik Vata, Reva Abrosi, Anyone with the TMC tag.", 
 		description = "A sleepy, dusty, old west styled town in the heart of Malgrave. Includes a saloon, clinic, courthouse, jail, mechanic shop/gas station, and a brawling ring.", 
 	},
+	{
+		title = "Salree Brightwater",
+		owner = "Salree Brightwater",
+		hours = "By Appointment only ",
+		staff = "Salree Brightwater",
+		description = "A full care spa and resort with a special focus in physical therapy in our super large lush swimming pool. Extended stay-cations are welcomed for the ultimate package of luxury or the new budding newly weds. \nJune 19th, the Spa is currently in reconstruction and will not be accepting appointments until (tentatively) July 14th for it's grand reopening. ",
+	},
+	{
+		title = "The Dullmoss Oasis",
+		owner = "Fissi Dullmoss",
+		hours = "Tuesdays, 7PM EST to 9PM EST",
+		staff = "Salree Brightwater",
+		description = "An aurin oasis out in the heat of Malgrave. Built under shade and supplied by transport crashes, the Dullmoss Oasis provides the best pilfered brews as well as a unique selection of home-grown fungus culinary dishes.",
+	},
+	{
+	title = "Stillriver Teahouse",
+	owner = "Suki Stillriver",
+	hours = "Monday and Friday 8-10 pm EST",
+	staff = "Suki Stillriver, Kuki Longtail, Rilk Duskrunner, Shen Soulweave",
+	description = "Suki Stillriver fixes a variety of delicious teas in a calm comfortable atmosphere. She prides herself in personalized and attentive service with a smile.\n\nPopular teas include:\n\nNaba tea: A spicy powdered blend with a hint of sweetness\nToba tea: A citrusy and flowery blend\nBurning Tea: A spicy blend with hints of cinnamon and chocolate and an aftertaste of woodsmoke\nPaka tea: A sweet tea of fruit leaves.\n\nOther teas available upon request.\n\nWith each tea you receive a free cookie, cookies include:\n\nChocolate Chip\nSugar\nShortbread\nSnickerdoodle\nHerbed\nSplorg's Delight\nOatmeal Raisin\nFruit and Nut\nGingersnap", },
 }

@@ -20,6 +20,7 @@ return {
 		hours = "Sun/Mon/Thu 9:00-12:00 PM EST",
 		staff = "Illthylian Leogan",
 		description = "A world apart, the Drunken Eldan Tavern was created with a singular purpose; to provide a higher-class of rest and entertainment than was offered by the insufficient government-operated locales of Illium and Hycrest. A private company, The Drunken Eldan has focused its entire being into a dream of creating a thriving and vibrant module for patrons of all walks of life.",
+		screenshots = "EntityDominionPlayer:IllthylianLeogan1, EntityDominionPlayer:IllthylianLeogan2"
 	 },
 	{
 		title = "The Shock Collar Bar & Casino",
@@ -35,5 +36,13 @@ return {
 		staff = "Grumlen Dangerpants",
 		description = "The Eldan-Fried Cubig (EFC) protobar was originally conceived by the Protostar Corporation as a means of assuring fast food services to almost anywhere in the known galaxy, utilizing a delivery system of advanced teleportation-based transit and housed in small, communal sit-in “dining ships”. The only constructed prototype was scrapped and left for ruin atop an asteroid in the Halon Ring of Nexus, where chua scrapper Grumlen \"Dangerpants\" stumbled upon it years later and took it upon himself to refurbish the small business to that of his own design. \nClaiming to definitely still be a licensed Protostar franchise, and boasting a menu of only 2 different questionably-specific fried meals... it’s safe to say EFC's food probably tastes as good as the place in which it’s presented is maintained.", 
 		screenshots = "EntityDominionPlayer:GrumlenDangerpants1, EntityDominionPlayer:GrumlenDangerpants2",
+	 },
+	{
+		title = "Our Lady Eldan",
+		owner = "Opeth Mistreaver",
+		hours = "24/7",
+		staff = "Priestess Helmina, Opeth Mistreaver, Furgun Darkstorm",
+		description = "This plot is a Vigilant Church, fully dedicated to the religious beliefs of the Dominion religion. There is a shrine to the Six Scions, a full church with pipe organ, confessional and prayer candles, a church rectory, mausoleum w/cemetery, a conference/meeting hall, cleansing water spring and expansive garden. \nIt is open to all religious events. Please contact our staff to set up events or for use of the plot, it is open for viewing, but would like to keep the peace so to speak. Regular Vigils (sermons) are held on Sundays at 7:00 PM EST.",
+		screenshots = "EntityDominionPlayer:OpethMistreaver1, EntityDominionPlayer:OpethMistreaver2"
 	 },
 }
