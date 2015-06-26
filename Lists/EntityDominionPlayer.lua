@@ -18,7 +18,7 @@ return {
 		title = "The Drunken Eldan Tavern",
 		owner = "Illthylian Leogan",
 		hours = "Sun/Mon/Thu 9:00-12:00 PM EST",
-		staff = "Illthylian Leogan",
+		staff = "Illthylian Leogan, Chef Noriack, Jessalet Moustachio, Kekka Havocsworn, Kharyn Aranis, Nines Crakshot, Vannyx Xanniton, Priestess Helmina",
 		description = "A world apart, the Drunken Eldan Tavern was created with a singular purpose; to provide a higher-class of rest and entertainment than was offered by the insufficient government-operated locales of Illium and Hycrest. A private company, The Drunken Eldan has focused its entire being into a dream of creating a thriving and vibrant module for patrons of all walks of life.",
 		screenshots = "EntityDominionPlayer:IllthylianLeogan1, EntityDominionPlayer:IllthylianLeogan2"
 	 },
