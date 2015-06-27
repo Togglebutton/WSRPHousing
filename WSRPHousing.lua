@@ -40,7 +40,7 @@ function WSRPHousing:new(o)
 	-- initialize variables here
 	self.arRealmList = {}
     self.bAnimate = true
-
+	
     return o
 end
 
@@ -84,7 +84,6 @@ function WSRPHousing:OnDocLoaded()
 		
 	    self.wndMain:Show(false, true)
 		self.wndMain:FindChild("wndLogo"):SetSprite("WSRPHousingSprites:Logo")
-		self.tDirectory = self:LoadData(GameLib.GetRealmName())
 		-- if the xmlDoc is no longer needed, you should set it to nil
 		-- self.xmlDoc = nil
 		-- Register handlers for events, slash commands and timer, etc.
@@ -143,6 +142,7 @@ function WSRPHousing:LoadData(strRealmName)
 
 	local strFaction
 	for i,v in pairs(Unit.CodeEnumFaction) do
+		--Print(v..": "..i)
 		if v == GameLib.GetPlayerUnit():GetFaction() then
 			strFaction = i
 			break
@@ -234,6 +234,9 @@ end
 function WSRPHousing:OnWSRPHousingOn(...)
 	self.wndMain:Show(not self.wndMain:IsShown())
 	self.wndMain:FindChild("btnAnimate"):SetCheck(self.bAnimate)
+	if not	self.tDirectory then
+		self.tDirectory = self:LoadData(GameLib.GetRealmName())
+	end
 end
 
 function WSRPHousing:OnNodeClick(wndHandler, wndControl, strNode, tAttributes, eMouseButton)
