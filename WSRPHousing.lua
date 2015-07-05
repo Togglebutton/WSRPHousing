@@ -106,12 +106,17 @@ function WSRPHousing:OnDocLoaded()
 end
 
 function WSRPHousing:OnJoinChannelTimer()
+	Print("Join Timer triggering")
 	self.chnWSRPHousing = ICCommLib.JoinChannel("WSRPHousing", ICCommLib.CodeEnumICCommChannelType.Global)
-	self.chnWSRPHousing:SetJoinResultFunction("OnJoinChannel", self)
+	if self.chnWSRPHousing then
+		Print("Channel created, setting join result function.")
+		self.chnWSRPHousing:SetJoinResultFunction("OnJoinChannel", self)
+	end
 end
 
 function WSRPHousing:OnMessageReceived(channel, strMessage, idMessage)
 	if channel ~= "WSRPHousing" then return end
+	Print("Message Received.")
 	--"SenderName|PlotName|Message"
 	local tMessage = strsplit("|", strMessage)
 	if tMessage[2] == "CLEAR" then
@@ -123,20 +128,32 @@ end
 
 function WSRPHousing:OnMessageSent(iccomm, eResult, idMessage)
 	if eResult == ICCommLib.CodeEnumICCommMessageResult.Sent then
-		--Print("Sent Correctly")
+		Print("Message Sent Correctly.")
 	elseif eResult == ICCommLib.CodeEnumICCommMessageResult.NotInChannel then
-	
+		Print("Not in Channel.")
 	elseif eResult == ICCommLib.CodeEnumICCommMessageResult.Throttled then
-		
+		Print("Message Throttled.")
 	end
 end
 
 function WSRPHousing:OnJoinChannel(iccomm, eResult)
+	Print("Join Result for channel: "..iccomm:GetName())
 	if eResult == ICCommLib.CodeEnumICCommJoinResult.Join then
+		Print("Successfully Joined.")
 		self.tmrJoinChannel:Stop()
 		self.chnWSRPHousing:SetReceivedMessageFunction("OnMessageReceived", self)
 		self.chnWSRPHousing:SetSendMessageResultFunction("OnMessageSent", self)
 	end
+end
+
+function WSRPHousing:SendAnnounce()
+	local strMessage = string.format("%s|%s|%s", unpack(self.tMyAnnounce))
+	self.chnWSRPHousing:SendMessage(strMessage)
+end
+
+function WSRPHousing:SendClear()
+	local strMessage = string.format("%s|CLEAR", self.strName)
+	self.chnWSRPHousing:SendMessage(strMessage)
 end
 
 function WSRPHousing:AnnounceReceived(tNewAnnouncement)
@@ -283,17 +300,6 @@ function WSRPHousing:CreateEntry(iIndex)
 	end
 	return xmlEntry
 end
-
-function WSRPHousing:SendAnnounce()
-	local strMessage = string.format("%s|%s|%s", unpack(self.tMyAnnounce))
-	self.chnWSRPHousing:SendMessage(strMessage)
-end
-
-function WSRPHousing:SendClear()
-	local strMessage = string.format("%s|CLEAR", self.strName)
-	self.chnWSRPHousing:SendMessage(strMessage)
-end
-
 -----------------------------------------------------------------------------------------------
 -- WSRPHousingForm Functions
 -----------------------------------------------------------------------------------------------
@@ -394,8 +400,9 @@ end
 function WSRPHousing:OnAnnounce( wndHandler, wndControl, eMouseButton )
 	local strMessage = self.wndAnnounce:FindChild("ebAnnounceText"):GetText()
 	local nTimeBetweenRepeat = self.wndAnnounce:FindChild("sldrTime"):GetValue()
-	self.tMyAnnounce = {self.strName, wndAnnounce:GetData(), strMessage}
+	self.tMyAnnounce = {self.strName, self.wndAnnounce:GetData(), strMessage}
 	self.tmrRepeatMessage = ApolloTimer.Create(nTimeBetweenRepeat * 60, true, "SendAnnounce", self)
+	self:SendAnnounce()
 end
 
 function WSRPHousing:OnClearAnnounce( wndHandler, wndControl, eMouseButton )

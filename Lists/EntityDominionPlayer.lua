@@ -52,4 +52,11 @@ return {
 		 staff = "Xerune Novimae, Isabella Sinclair, Perseus Ford, Vyzura Razorcloak, Atun Nol",
 		 description = "The Imperial Park is a place for all Dominion citizens to enjoy the flora wonders of Nexus at any time and within the safety of the Empire.  However there is also a secret, underground the ICI conducts meetings and other details.",
 	 },
+	 {
+		title = "Miko's Pad",
+		owner = "Miko Midoriyama",
+		hours = "24/7",
+		staff = "Miko Midoriyama",
+		description = "Test",
+	 },
 }
