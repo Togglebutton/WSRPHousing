@@ -111,6 +111,7 @@ end
 
 function WSRPHousing:OnJoinChannelTimer()
 	Print("Join Timer triggering")
+	self.chnWSRPHousing = nil
 	self.chnWSRPHousing = ICCommLib.JoinChannel("WSRPHousing", ICCommLib.CodeEnumICCommChannelType.Global)
 	if self.chnWSRPHousing then
 		Print("Channel created, setting join result function.")
