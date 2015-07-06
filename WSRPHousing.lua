@@ -7,6 +7,10 @@ require "Window"
 require "GameLib"
 require "Unit"
 require "ICCommLib"
+require "ICComm"
+require "XmlDoc"
+require "ChatSystemLib"
+require "HousingLib"
  
 -----------------------------------------------------------------------------------------------
 -- WSRPHousing Module Definition
