@@ -143,6 +143,9 @@ end
 
 function WSRPHousing:OnJoinChannel(iccomm, eResult)
 	Print("Join Result for channel: "..iccomm:GetName())
+	if iccomm:GetName() == "WSRPHousing" then
+		self.chnWSRPHousing = iccomm
+	end
 	if eResult == ICCommLib.CodeEnumICCommJoinResult.Join then
 		Print("Successfully Joined.")
 		self.tmrJoinChannel:Stop()
