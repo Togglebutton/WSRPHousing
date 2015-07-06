@@ -24,7 +24,8 @@ local ktStyles = {
 	title = { color = "UI_TextHoloTitle", font = "CRB_HeaderLarge", align = "Center" },
 	header = { color = "UI_TextHoloTitle", font = "CRB_InterfaceMedium_BB", align = "Left" },
 	content = { color = "UI_BtnTextHoloNormal", font = "CRB_InterfaceMedium", align = "Left" },
-	rules = {color = "UI_TextHoloTitle", font = "CRB_InterfaceMedium_BB", align = "Center" }
+	rules = {color = "UI_TextHoloTitle", font = "CRB_InterfaceMedium_BB", align = "Center" },
+	callout = {color = "UI_WindowYellow", font = "CRB_InterfaceLarge_BBO", align = "Left" },
 }
 local kstrAnnounceTitle = "You are creating an announcement for the plot: %s"
 
@@ -93,8 +94,7 @@ function WSRPHousing:OnDocLoaded()
 	    self.wndMain:Show(false, true)
 		self.wndMain:FindChild("wndLogo"):SetSprite("WSRPHousingSprites:Logo")
 		self.wndAnnounce = self.wndMain:FindChild("wndAnnounce")
-		self.wndAnnounce:FindChild("ebAnnounceText"):SetMaxTextLength(200)
-		--self.wndAnnounce:FindChild("ebAnnounceText"):SetPrompt("Prompt")
+		self.wndAnnounce:FindChild("ebAnnounceText"):SetMaxTextLength(150)
 		self.wndTicker = self.wndMain:FindChild("wndTicker")
 		self.wndTicker:SetTickerSpeed(75)
 
@@ -102,6 +102,7 @@ function WSRPHousing:OnDocLoaded()
 		Apollo.RegisterEventHandler("InterfaceMenuListHasLoaded",	"OnInterfaceMenuLoaded", self)
 		Apollo.RegisterEventHandler("WSRPHousing_InterfaceMenu",	"OnWSRPHousingInterfaceMenu", self)
 		Apollo.RegisterEventHandler("WSRPHousing_UpdateAnouncement",	"OnAnnouncementUpdate", self)
+		Apollo.RegisterEventHandler("LogOut", "OnClearAnnounce", self)
 		
 		Apollo.RegisterSlashCommand("wsrphouse", "OnWSRPHousingOn", self)
 		-- Do additional Addon initialization here
@@ -111,12 +112,16 @@ end
 
 function WSRPHousing:OnJoinChannelTimer()
 	Print("Join Timer triggering")
-	self.chnWSRPHousing = nil
+	--self.chnWSRPHousing = nil
 	self.chnWSRPHousing = ICCommLib.JoinChannel("WSRPHousing", ICCommLib.CodeEnumICCommChannelType.Global)
-	if self.chnWSRPHousing then
+	if self.chnWSRPHousing:IsReady() then
 		Print("Channel created, setting join result function.")
 		self.chnWSRPHousing:SetJoinResultFunction("OnJoinChannel", self)
+		self.chnWSRPHousing:SetReceivedMessageFunction("OnMessageReceived", self)
+		self.chnWSRPHousing:SetSendMessageResultFunction("OnMessageSent", self)
+		self.tmrJoinChannel:Stop()
 	end
+
 end
 
 function WSRPHousing:OnMessageReceived(channel, strMessage, idMessage)
@@ -272,7 +277,7 @@ function WSRPHousing:CreateEntry(iIndex)
 	xmlEntry:AddLine(tEntry.title, ktStyles.title.color, ktStyles.title.font, ktStyles.title.align)
 	xmlEntry:AddLine("Owner: ", ktStyles.header.color, ktStyles.header.font, ktStyles.header.align)
 	xmlEntry:AppendText(tEntry.owner, ktStyles.content.color, ktStyles.content.font, {Align = ktStyles.content.align})
-	xmlEntry:AppendText("    [Visit]", "UI_WindowYellow","CRB_InterfaceLarge_BBO", { owner = tEntry.owner,  BGColor  = "ffffffff"}, "Visit")
+	xmlEntry:AppendText("    [Visit]", ktStyles.callout.color, ktStyles.callout.font, { owner = tEntry.owner,  BGColor  = "ffffffff"}, "Visit")
 	xmlEntry:AddLine("Hours: ", ktStyles.header.color, ktStyles.header.font, ktStyles.header.align)
 	xmlEntry:AppendText(tEntry.hours, ktStyles.content.color, ktStyles.content.font, {Align = ktStyles.content.align})
 	xmlEntry:AddLine("Staff: ", ktStyles.header.color, ktStyles.header.font, ktStyles.header.align)
@@ -284,7 +289,7 @@ function WSRPHousing:CreateEntry(iIndex)
 		end
 		if v == self.strName then
 			xmlEntry:AppendText(v.." ", ktStyles.content.color, ktStyles.content.font, { player = v}, "Staff" )
-			xmlEntry:AppendText("[Make Announcement]", ktStyles.header.color, ktStyles.header.font, { player = v, title = tEntry.title}, "Announce" )
+			xmlEntry:AppendText("[Make Announcement]", ktStyles.callout.color, ktStyles.callout.font, { player = v, title = tEntry.title}, "Announce" )
 			xmlEntry:AppendText(strSep, ktStyles.content.color, ktStyles.content.font)
 
 		else
@@ -415,10 +420,12 @@ end
 
 function WSRPHousing:OnClearAnnounce( wndHandler, wndControl, eMouseButton )
 	self.tMyAnnounce = nil
-	self.tmrRepeatMessage:Stop()
+	if self.tmrRepeatMessage then
+		self.tmrRepeatMessage:Stop()
+	end
 	self.tmrRepeatMessage = nil
-	self.wndAnnounce:FindChild("ebAnnounceText"):ClearText()
-	self.wndAnnounce:FindChild("sldrTime"):SetValue(1)
+	self.wndAnnounce:FindChild("ebAnnounceText"):SetText("")
+	self.wndAnnounce:FindChild("sldrTime"):SetValue(2)
 	self:SendClear()
 end
 
