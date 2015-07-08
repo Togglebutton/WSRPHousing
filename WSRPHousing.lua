@@ -124,7 +124,6 @@ function WSRPHousing:OnJoinChannelTimer()
 end
 
 function WSRPHousing:OnMessageReceived(channel, strMessage, idMessage)
-	if channel ~= "WSRPHousing" then return end
 	Print("Message Received.")
 	--"SenderName|PlotName|Message"
 	local tMessage = strsplit("|", strMessage)
@@ -172,6 +171,7 @@ function WSRPHousing:SendClear()
 end
 
 function WSRPHousing:AnnounceReceived(tNewAnnouncement)
+	if not self.tAnnouncements then self.tAnnouncements = {} end
 	for i,v in pairs(self.tAnnouncements) do
 		if v[1] == tNewAnnouncement[1] then
 			self.tAnnouncements[i] = tNewAnnouncement
@@ -204,7 +204,7 @@ function WSRPHousing:OnAnnouncementUpdate()
 				xmlContent:AddLine(v[2]..": ", "UI_TextHoloTitle", "CRB_InterfaceLarge_BBO")
 				xmlContent:AppendText(v[3], "UI_BtnTextHoloNormal", "CRB_InterfaceLarge_BB")
 				wnd:SetDoc(xmlContent)
-				local iNumChars = string.len(v[3])
+				local iNumChars = string.len(v[3]) + string.len(v[2])
 				local iWidth = iNumChars / 10 * 110
 				wnd:SetAnchorOffsets(0,0,iWidth,0)
 				self.wndTicker:AddTickerForm(wnd)
