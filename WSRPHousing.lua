@@ -36,7 +36,7 @@ local function strsplit(sep, str)
 		return fields
 end
 
-local test
+local kstrChatAnnounce = "[WSRP Housing] %s: %s"
 -----------------------------------------------------------------------------------------------
 -- Initialization
 -----------------------------------------------------------------------------------------------
@@ -111,11 +111,10 @@ function WSRPHousing:OnDocLoaded()
 end
 
 function WSRPHousing:OnJoinChannelTimer()
-	Print("Join Timer triggering")
-	--self.chnWSRPHousing = nil
+	--Print("Join Timer triggering")
 	self.chnWSRPHousing = ICCommLib.JoinChannel("WSRPHousing", ICCommLib.CodeEnumICCommChannelType.Global)
 	if self.chnWSRPHousing:IsReady() then
-		Print("Channel created, setting join result function.")
+		--Print("Channel created, setting join result function.")
 		self.chnWSRPHousing:SetJoinResultFunction("OnJoinChannel", self)
 		self.chnWSRPHousing:SetReceivedMessageFunction("OnMessageReceived", self)
 		self.chnWSRPHousing:SetSendMessageResultFunction("OnMessageSent", self)
@@ -138,21 +137,21 @@ end
 
 function WSRPHousing:OnMessageSent(iccomm, eResult, idMessage)
 	if eResult == ICCommLib.CodeEnumICCommMessageResult.Sent then
-		Print("Message Sent Correctly.")
+		--Print("Message Sent Correctly.")
 	elseif eResult == ICCommLib.CodeEnumICCommMessageResult.NotInChannel then
-		Print("Not in Channel.")
+		--Print("Not in Channel.")
 	elseif eResult == ICCommLib.CodeEnumICCommMessageResult.Throttled then
-		Print("Message Throttled.")
+		--Print("Message Throttled.")
 	end
 end
 
 function WSRPHousing:OnJoinChannel(iccomm, eResult)
-	Print("Join Result for channel: "..iccomm:GetName())
-	if iccomm:GetName() == "WSRPHousing" then
-		self.chnWSRPHousing = iccomm
-	end
+	--Print("Join Result for channel: "..iccomm:GetName())
+	--if iccomm:GetName() == "WSRPHousing" then
+	--	self.chnWSRPHousing = iccomm
+	--end
 	if eResult == ICCommLib.CodeEnumICCommJoinResult.Join then
-		Print("Successfully Joined.")
+		--Print("Successfully Joined.")
 		self.tmrJoinChannel:Stop()
 		self.chnWSRPHousing:SetReceivedMessageFunction("OnMessageReceived", self)
 		self.chnWSRPHousing:SetSendMessageResultFunction("OnMessageSent", self)
@@ -162,6 +161,9 @@ end
 function WSRPHousing:SendAnnounce()
 	local strMessage = string.format("%s|%s|%s", unpack(self.tMyAnnounce))
 	self.chnWSRPHousing:SendMessage(strMessage)
+	if self.bChatAnnounce == true then
+		self.chnRPChat:Send(string.format(kstrChatAnnounce, self.tMyAnnounce[2], self.tMyAnnounce[3]))
+	end
 end
 
 function WSRPHousing:SendClear()
@@ -356,6 +358,16 @@ function WSRPHousing:OnWSRPHousingOn(...)
 	if not	self.tDirectory then
 		self.tDirectory = self:LoadData(GameLib.GetRealmName())
 	end
+	if self.chnRPChat == nil then
+		local tChannels = ChatSystemLib.GetChannels()
+		for i,v in pairs(tChannels) do
+			local strChanName = v:GetName() 
+			if v:IsCustom() == true and (strChanName == "WSRP" or strChanName == "LFRP") then
+				self.chnRPChat = v
+			end
+		end
+	end
+	--Print("Chat Channel Identified: "..self.chnRPChat:GetName())
 	Event_FireGenericEvent("WSRPHousing_UpdateAnouncement")
 end
 
@@ -431,6 +443,10 @@ end
 
 function WSRPHousing:OnTimeChange( wndHandler, wndControl, fNewValue, fOldValue )
 
+end
+
+function WSRPHousing:OnChatAnnounceCheck( wndHandler, wndControl, eMouseButton )
+	self.bChatAnnounce = wndControl:IsChecked()
 end
 
 -----------------------------------------------------------------------------------------------
