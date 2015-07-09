@@ -29,6 +29,11 @@ local ktStyles = {
 }
 local kstrAnnounceTitle = "You are creating an announcement for the plot: %s"
 
+local ktRealmChannel = {
+	Jabbit = "LFRP",
+	Entity = "WSRP",
+}
+
 local function strsplit(sep, str)
 		local sep, fields = sep or ":", {}
 		local pattern = string.format("([^%s]+)", sep)
@@ -49,6 +54,7 @@ function WSRPHousing:new(o)
     self.bAnimate = true
 	self.tTickerContents = {}
 	self.tAnnouncements = {}
+	self.tMyAnnounce = {}
 	
     return o
 end
@@ -102,7 +108,8 @@ function WSRPHousing:OnDocLoaded()
 		Apollo.RegisterEventHandler("InterfaceMenuListHasLoaded",	"OnInterfaceMenuLoaded", self)
 		Apollo.RegisterEventHandler("WSRPHousing_InterfaceMenu",	"OnWSRPHousingInterfaceMenu", self)
 		Apollo.RegisterEventHandler("WSRPHousing_UpdateAnouncement",	"OnAnnouncementUpdate", self)
-		Apollo.RegisterEventHandler("LogOut", "OnClearAnnounce", self)
+		Apollo.RegisterEventHandler("GenericEvent_PlayerCampStart", "OnLogOut", self)
+		Apollo.RegisterEventHandler("GenericEvent_PlayerExitStart", "OnLogOut", self)
 		
 		Apollo.RegisterSlashCommand("wsrphouse", "OnWSRPHousingOn", self)
 		-- Do additional Addon initialization here
@@ -110,12 +117,17 @@ function WSRPHousing:OnDocLoaded()
 	end
 end
 
+function WSRPHousing:OnLogOut()
+	Print("Log Out Triggered")
+end
+
+
 function WSRPHousing:OnJoinChannelTimer()
 	--Print("Join Timer triggering")
 	self.chnWSRPHousing = ICCommLib.JoinChannel("WSRPHousing", ICCommLib.CodeEnumICCommChannelType.Global)
 	if self.chnWSRPHousing:IsReady() then
 		--Print("Channel created, setting join result function.")
-		self.chnWSRPHousing:SetJoinResultFunction("OnJoinChannel", self)
+		--self.chnWSRPHousing:SetJoinResultFunction("OnJoinChannel", self)
 		self.chnWSRPHousing:SetReceivedMessageFunction("OnMessageReceived", self)
 		self.chnWSRPHousing:SetSendMessageResultFunction("OnMessageSent", self)
 		self.tmrJoinChannel:Stop()
@@ -124,7 +136,7 @@ function WSRPHousing:OnJoinChannelTimer()
 end
 
 function WSRPHousing:OnMessageReceived(channel, strMessage, idMessage)
-	Print("Message Received.")
+	--Print("Message Received.")
 	--"SenderName|PlotName|Message"
 	local tMessage = strsplit("|", strMessage)
 	if tMessage[2] == "CLEAR" then
@@ -138,19 +150,14 @@ function WSRPHousing:OnMessageSent(iccomm, eResult, idMessage)
 	if eResult == ICCommLib.CodeEnumICCommMessageResult.Sent then
 		--Print("Message Sent Correctly.")
 	elseif eResult == ICCommLib.CodeEnumICCommMessageResult.NotInChannel then
-		--Print("Not in Channel.")
+		Apollo.AddAddonErrorText(self, "Not in Channel.")
 	elseif eResult == ICCommLib.CodeEnumICCommMessageResult.Throttled then
-		--Print("Message Throttled.")
+		Apollo.AddAddonErrorText(self, "Message Throttled.")
 	end
 end
 
 function WSRPHousing:OnJoinChannel(iccomm, eResult)
-	--Print("Join Result for channel: "..iccomm:GetName())
-	--if iccomm:GetName() == "WSRPHousing" then
-	--	self.chnWSRPHousing = iccomm
-	--end
 	if eResult == ICCommLib.CodeEnumICCommJoinResult.Join then
-		--Print("Successfully Joined.")
 		self.tmrJoinChannel:Stop()
 		self.chnWSRPHousing:SetReceivedMessageFunction("OnMessageReceived", self)
 		self.chnWSRPHousing:SetSendMessageResultFunction("OnMessageSent", self)
@@ -167,6 +174,9 @@ end
 
 function WSRPHousing:SendClear()
 	local strMessage = string.format("%s|CLEAR", self.strName)
+	self.tMyAnnounce = nil
+	self.tMyAnnounce = {}
+	Event_FireGenericEvent("WSRPHousing_UpdateAnouncement")
 	self.chnWSRPHousing:SendMessage(strMessage)
 end
 
@@ -181,6 +191,7 @@ function WSRPHousing:AnnounceReceived(tNewAnnouncement)
 	end
 	table.insert(self.tAnnouncements, tNewAnnouncement)
 	Event_FireGenericEvent("WSRPHousing_UpdateAnouncement")
+	Event_FireGenericEvent("InterfaceMenuList_AlertAddOn", "WSRP Housing Directory", {true, " Announcements Updated", #self.tAnnouncements})
 end
 
 function WSRPHousing:ClearReceived(tMessage)
@@ -205,6 +216,18 @@ function WSRPHousing:OnAnnouncementUpdate()
 				xmlContent:AppendText(v[3], "UI_BtnTextHoloNormal", "CRB_InterfaceLarge_BB")
 				wnd:SetDoc(xmlContent)
 				local iNumChars = string.len(v[3]) + string.len(v[2])
+				local iWidth = iNumChars / 10 * 110
+				wnd:SetAnchorOffsets(0,0,iWidth,0)
+				self.wndTicker:AddTickerForm(wnd)
+				table.insert(self.tTickerContents, wnd)
+		end
+		if #self.tMyAnnounce > 0 then
+				local wnd = Apollo.LoadForm(self.xmlDoc, "TickerContentForm", self.wndTicker, self)
+				local xmlContent = XmlDoc.new()
+				xmlContent:AddLine(self.tMyAnnounce[2]..": ", "UI_TextHoloTitle", "CRB_InterfaceLarge_BBO")
+				xmlContent:AppendText(self.tMyAnnounce[3], "UI_BtnTextHoloNormal", "CRB_InterfaceLarge_BB")
+				wnd:SetDoc(xmlContent)
+				local iNumChars = string.len(self.tMyAnnounce[3]) + string.len(self.tMyAnnounce[2])
 				local iWidth = iNumChars / 10 * 110
 				wnd:SetAnchorOffsets(0,0,iWidth,0)
 				self.wndTicker:AddTickerForm(wnd)
@@ -262,9 +285,9 @@ function WSRPHousing:LoadData(strRealmName)
 		end
 	end
 	--ExilesPlayer, DominionPlayer
-	local strRealmFac = string.format("%s%s", strRealmName, strFaction)
-	local tDirectory = dofile(string.match(Apollo.GetAssetFolder(), "(.-)[\\/][Aa][Dd][Dd][Oo][Nn][Ss]") .. "\\Addons\\WSRPHousing\\Lists\\".. strRealmFac .. ".lua")
-	Apollo.LoadSprites(strRealmFac .. ".xml", strRealmFac )
+	self.strRealmFac = string.format("%s%s", strRealmName, strFaction)
+	local tDirectory = dofile(string.match(Apollo.GetAssetFolder(), "(.-)[\\/][Aa][Dd][Dd][Oo][Nn][Ss]") .. "\\Addons\\WSRPHousing\\Lists\\".. self.strRealmFac .. ".lua")
+	Apollo.LoadSprites(self.strRealmFac .. ".xml", self.strRealmFac )
 	local wndList = self.wndMain:FindChild("wndGrid")
 	for i,v in pairs(tDirectory) do
 		wndList:AddRow(v.title)
@@ -304,27 +327,20 @@ function WSRPHousing:CreateEntry(iIndex)
 	for i,v in pairs(arDescription) do
 		xmlEntry:AddLine("    "..v, ktStyles.content.color, ktStyles.content.font, ktStyles.content.align)
 	end
-	if tEntry.screenshots then
-		local tScreenshots = strsplit(",", tEntry.screenshots)
-		xmlEntry:AddLine("------------------------------------------------------------------------",  ktStyles.rules.color, ktStyles.rules.font, ktStyles.rules.align)
-		for i,v in pairs(tScreenshots) do
-			xmlEntry:AddLine("", ktStyles.rules.color, ktStyles.rules.font, ktStyles.rules.align)
-			xmlEntry:AppendImage(v, 256, 256)
-			xmlEntry:AddLine("------------------------------------------------------------------------",  ktStyles.rules.color, ktStyles.rules.font, ktStyles.rules.align)
-		end
+	xmlEntry:AddLine("------------------------------------------------------------------------",  ktStyles.rules.color, ktStyles.rules.font, ktStyles.rules.align)
+	for i = 1, 2 do
+		xmlEntry:AddLine("", ktStyles.rules.color, ktStyles.rules.font, ktStyles.rules.align)
+		local tName = strsplit(" ", tEntry.owner)
+		local strSpriteName = self.strRealmFac..":"..table.concat(tName)..i
+		xmlEntry:AppendImage(strSpriteName , 256, 256)
 	end
 	return xmlEntry
 end
 -----------------------------------------------------------------------------------------------
 -- WSRPHousingForm Functions
 -----------------------------------------------------------------------------------------------
--- when the OK button is clicked
-function WSRPHousing:OnOK()
-	self.wndMain:Close() -- hide the window
-end
-
--- when the Cancel button is clicked
 function WSRPHousing:OnCancel()
+	Event_FireGenericEvent("InterfaceMenuList_AlertAddOn", "WSRP Housing Directory", {false, nil, nil})
 	self.wndMain:Close() -- hide the window
 end
 
@@ -336,7 +352,7 @@ function WSRPHousing:OnSelectionChanged( wndHandler, wndControl, iRow, iCol)
 	local wndLogo = self.wndMain:FindChild("wndLogo")
 	if wndLogo:IsShown() then
 		wndLogo:Show(false, true)
-	end	
+	end
 	if self.bAnimate == true then
 			wndHolo:SetAnchorOffsets(220, 136, 669, 176)
 			local tLoc = WindowLocation.new({ fPoints = { 0, 0, 0, 0 }, nOffsets = { 220, 136, 669, 770 }})
@@ -362,7 +378,7 @@ function WSRPHousing:OnWSRPHousingOn(...)
 		local tChannels = ChatSystemLib.GetChannels()
 		for i,v in pairs(tChannels) do
 			local strChanName = v:GetName() 
-			if v:IsCustom() == true and (strChanName == "WSRP" or strChanName == "LFRP") then
+			if v:IsCustom() == true and strChanName == ktRealmChannel[GameLib.GetRealmName()] then
 				self.chnRPChat = v
 			end
 		end
@@ -431,6 +447,7 @@ function WSRPHousing:OnAnnounce( wndHandler, wndControl, eMouseButton )
 end
 
 function WSRPHousing:OnClearAnnounce( wndHandler, wndControl, eMouseButton )
+	if self.tMyAnnounce == nil then return end
 	self.tMyAnnounce = nil
 	if self.tmrRepeatMessage then
 		self.tmrRepeatMessage:Stop()
