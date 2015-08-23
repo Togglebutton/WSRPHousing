@@ -30,12 +30,6 @@
     <Sprite Name="JabbitTooth2" Cycle="1">
         <Frame Texture="WSRPHousing\images\EntityDominion\JabbitTooth2.png" x0="0" x1="0" x2="0" x3="256" x4="256" x5="256" y0="0" y1="0" y2="0" y3="256" y4="256" y5="256" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
     </Sprite>
-    <Sprite Name="RemarusLocke1" Cycle="1">
-        <Frame Texture="WSRPHousing\images\EntityDominion\RemarusLocke1.png" x0="0" x1="0" x2="0" x3="256" x4="256" x5="256" y0="0" y1="0" y2="0" y3="256" y4="256" y5="256" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
-    </Sprite>
-    <Sprite Name="RemarusLocke2" Cycle="1">
-        <Frame Texture="WSRPHousing\images\EntityDominion\RemarusLocke2.png" x0="0" x1="0" x2="0" x3="256" x4="256" x5="256" y0="0" y1="0" y2="0" y3="256" y4="256" y5="256" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
-    </Sprite>
     <Sprite Name="XeruneNovimae1" Cycle="1">
         <Frame Texture="WSRPHousing\images\EntityDominion\XeruneNovimae1.jpg" x0="0" x1="0" x2="0" x3="256" x4="256" x5="256" y0="0" y1="0" y2="0" y3="256" y4="256" y5="256" HotspotX="0" HotspotY="0" Duration="1.000" StartColor="white" EndColor="white"/>
     </Sprite>
