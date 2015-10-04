@@ -287,7 +287,6 @@ function WSRPHousing:LoadData(strRealmName)
 	--ExilesPlayer, DominionPlayer
 	self.strRealmFac = string.format("%s%s", strRealmName, strFaction)
 	local tDirectory = dofile(string.match(Apollo.GetAssetFolder(), "(.-)[\\/][Aa][Dd][Dd][Oo][Nn][Ss]") .. "\\Addons\\WSRPHousing\\Lists\\".. self.strRealmFac .. ".lua")
-	Apollo.LoadSprites(self.strRealmFac .. ".xml", self.strRealmFac )
 	local wndList = self.wndMain:FindChild("wndGrid")
 	for i,v in pairs(tDirectory) do
 		wndList:AddRow(v.title)
@@ -326,13 +325,6 @@ function WSRPHousing:CreateEntry(iIndex)
 	local arDescription = strsplit("\n", tEntry.description)
 	for i,v in pairs(arDescription) do
 		xmlEntry:AddLine("    "..v, ktStyles.content.color, ktStyles.content.font, ktStyles.content.align)
-	end
-	xmlEntry:AddLine("------------------------------------------------------------------------",  ktStyles.rules.color, ktStyles.rules.font, ktStyles.rules.align)
-	for i = 1, 2 do
-		xmlEntry:AddLine("", ktStyles.rules.color, ktStyles.rules.font, ktStyles.rules.align)
-		local tName = strsplit(" ", tEntry.owner)
-		local strSpriteName = self.strRealmFac..":"..table.concat(tName)..i
-		xmlEntry:AppendImage(strSpriteName , 256, 256)
 	end
 	return xmlEntry
 end
